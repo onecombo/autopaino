@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: Check out code
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -25,28 +25,22 @@ jobs:
         pip install pyinstaller
         pip install -r requirements.txt
 
-      - name: Build executable with PyInstaller
+      - name: Build exe with PyInstaller
       run: |
         pyinstaller --onefile --windowed auto.py
 
-      - name: Upload executable as artifact
+      - name: Archive build artifact
       uses: actions/upload-artifact@v3
       with:
-        name: auto-executable
-        path: dist/auto.exe
+        name: my-executable
+        path: dist/autopaino.exe
 
-      - name: Create GitHub Release
+      - name: Create Release
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ github.ref_name }}
-        name: Release ${{ github.ref_name }}
+        name: ${{ github.ref_name }}
         draft: false
         prerelease: false
-        files: dist/autopaino.exe
-
-      - name: Clean build directories
-        run: |
-          rmdir /S /Q build
-          rmdir /S /Q dist
-          del auto.spec
-
+        artifacts: "my-executable"
+        token: ${{ secrets.GITHUB_TOKEN }}
