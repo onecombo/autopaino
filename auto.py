@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import base64
 import os
 import sys
@@ -11,8 +12,8 @@ from mido import MidiFile
 from pynput.keyboard import GlobalHotKeys
 
 
-def decode(b64: str) -> str:
-    return base64.b64decode(b64).decode('utf-8')
+def decode(s):
+    return base64.b64decode(s).decode('utf-8')
 
 
 def check_admin():
@@ -21,7 +22,7 @@ def check_admin():
     except AttributeError:
         is_admin = (ctypes.windll.shell32.IsUserAnAdmin() != 0)
     if not is_admin:
-        print(decode("5piv5ZCI5p2D5paw5Yqf5pu+5Yiw6ZOB5q2lLi4u"))
+        print(decode("5b2T5YmN6Z2e566h55CG5ZGY5p2D6ZmQ77yM5bCd6K+V5o+Q5p2DLi4u"))
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
         sys.exit(0)
 
@@ -52,7 +53,7 @@ KEY_MAP = {
 WHITE_KEYS = sorted(KEY_MAP.keys())
 
 
-def get_closest_white_key(pitch: int) -> int:
+def get_closest_white_key(pitch):
     if not WHITE_KEYS:
         return None
     if pitch < WHITE_KEYS[0]:
@@ -73,7 +74,7 @@ def get_closest_white_key(pitch: int) -> int:
     return closest
 
 
-def get_key_for_pitch(pitch: int) -> str:
+def get_key_for_pitch(pitch):
     if pitch in KEY_MAP:
         return KEY_MAP[pitch]
     cwk = get_closest_white_key(pitch)
@@ -82,7 +83,7 @@ def get_key_for_pitch(pitch: int) -> str:
     return None
 
 
-def parse_midi_all_tempo(midi_path: str):
+def parse_midi_all_tempo(midi_path):
     mid = MidiFile(midi_path)
     all_events = []
     for track in mid.tracks:
@@ -150,38 +151,42 @@ def post_process_events(events, chord_min_interval=0.01, note_min_interval=0.03)
 class MidiPlayerApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title(decode(
-            "TUlESSBQbGF5ZXIgKOaYrumTtuWPkeW6l1RlbXBvICsg5pyJ5qCh6KeG5pyqKSBmcm9tOuafruWJjeadgOanAy3our/np5HlrZDnmITlnKjnpLrnoh46L657omZTmiYvmmK/nnb7vvIA="))
+        self.title(decode("TUlESSBQbGF5ZXI="))
         self.events = []
         self.play_thread = None
         self.stop_flag = False
         self.parse_thread = None
         frame_top = tk.Frame(self)
         frame_top.pack(pady=5)
-        self.btn_select = tk.Button(frame_top, text=decode("6K6h5pyJIE1JREkg5paw5a2Q"), command=self.on_select_file)
+        self.btn_select = tk.Button(frame_top, text=decode("6YCJ5oupIE1JREkg5paH5Lu2"), command=self.on_select_file)
         self.btn_select.pack(side=tk.LEFT, padx=5)
-        self.label_file = tk.Label(frame_top, text=decode("5piv6K6h5pyJ5paw5a2Q"), width=35, anchor='w')
+        self.label_file = tk.Label(frame_top, text=decode("5pyq6YCJ5oup5paH5Lu2"), width=35, anchor='w')
         self.label_file.pack(side=tk.LEFT, padx=5)
         frame_intervals = tk.Frame(self)
         frame_intervals.pack(pady=5)
-        tk.Label(frame_intervals, text=decode("6Kqk6YGN5p2l5bi45pu45bqPICjlj4LnrYkn")).pack(side=tk.LEFT, padx=2)
+        tk.Label(frame_intervals,
+                 text=decode("5ZKM5bym5pyA5bCP6Ze06ZqUIA==")).pack(
+            side=tk.LEFT, padx=2)
         self.entry_chord = tk.Entry(frame_intervals, width=5)
         self.entry_chord.pack(side=tk.LEFT, padx=2)
         self.entry_chord.insert(0, "0")
-        tk.Label(frame_intervals, text=decode("5pyq5LiX5p2l5bi45pu45bqPICjlj4LnrYkn")).pack(side=tk.LEFT, padx=2)
+        tk.Label(frame_intervals,
+                 text=decode("6Z+z56ym5pyA5bCP6Ze06ZqU")).pack(
+            side=tk.LEFT, padx=2)
         self.entry_note = tk.Entry(frame_intervals, width=5)
         self.entry_note.pack(side=tk.LEFT, padx=2)
         self.entry_note.insert(0, "0")
-        self.label_status = tk.Label(self, text=decode("5piv6K+36Ze0"))
+        self.label_status = tk.Label(self, text=decode("5YeG5aSH5bCx57uq"))
         self.label_status.pack(pady=5)
         frame_play = tk.Frame(self)
         frame_play.pack(pady=5)
-        self.btn_start = tk.Button(frame_play, text=decode("5oiR5piv5Z2i5Lu2KCBDdHJsK0YxMCk="), command=self.start_play)
+        self.btn_start = tk.Button(frame_play, text=decode("5byA5aeL5pKt5pS+IChDdHJsK0YxMCk="), command=self.start_play)
         self.btn_start.pack(side=tk.LEFT, padx=10)
-        self.btn_stop = tk.Button(frame_play, text=decode("5oiR5piv5Z2i5Lu2KCBDdHJsK0YxMTEp"), command=self.stop_play)
+        self.btn_stop = tk.Button(frame_play, text=decode("5YGc5q2i5pKt5pS+IChDdHJsK0YxMSk="), command=self.stop_play)
         self.btn_stop.pack(side=tk.LEFT, padx=10)
-        self.label_author = tk.Label(self, text=decode(
-            "5p+u5YmN5p2A5qcDLei6v+enkeWtkOeahOWcqOekuueheOi+ueaJlOaJi+aYr+etvu+8gA=="))
+        self.label_author = tk.Label(self,
+                                     text=decode("55G25YWJ5rKB6ZuqLeazquWGoOWTgOatjO+8jOacrOeoi+W6j+WFjei0ueWPkeW4g"
+                                                 "++8jOWmgumBh+WAkuWNluivt+WPiuaXtumAgOasvuOAgg=="))
         self.label_author.pack(side=tk.BOTTOM, pady=5)
         self.global_hotkey_listener = None
         self.start_global_hotkeys()
@@ -189,21 +194,23 @@ class MidiPlayerApp(tk.Tk):
     def on_select_file(self):
         self.stop_play()
         self.events = []
-        file_path = filedialog.askopenfilename(title=decode("6K6h5pyJIE1JREkg5paw5a2Q"),
-                                               filetypes=[("MIDI files", "*.mid *.midi"), ("All files", "*.*")])
+        file_path = filedialog.askopenfilename(
+            title=decode("6YCJ5oupIE1JREkg5paH5Lu2"),
+            filetypes=[("MIDI files", "*.mid *.midi"), ("All files", "*.*")]
+        )
         if file_path:
             self.label_file.config(text=file_path)
-            self.label_status.config(text=decode("5Yqg5pyJ5qCh6KeG5pyq5ZCN77yB"))
+            self.label_status.config(text=decode("5ZCO5Y+w6Kej5p6Q5Lit77yM6K+356iN5YCZLi4u"))
             if self.parse_thread and self.parse_thread.is_alive():
-                self.label_status.config(text=decode("5b+F5bel5L2c56K6656i5pyJ5qCh5rya6L+Z77yB"))
+                self.label_status.config(text=decode("562J5b6F5LiK5LiA5Liq6Kej5p6Q5a6M5oiQLi4u"))
                 return
             self.parse_thread = threading.Thread(target=self.parse_midi_in_background, args=(file_path,), daemon=True)
             self.parse_thread.start()
         else:
-            self.label_file.config(text=decode("5piv6K6h5pyJ5paw5a2Q"))
-            self.label_status.config(text=decode("5piv6K6h5pyJ5paw5a2Q"))
+            self.label_file.config(text=decode("5pyq6YCJ5oup5paH5Lu2"))
+            self.label_status.config(text=decode("5pyq6YCJ5oup5paH5Lu2"))
 
-    def parse_midi_in_background(self, file_path: str):
+    def parse_midi_in_background(self, file_path):
         raw_events = parse_midi_all_tempo(file_path)
         try:
             chord_val = float(self.entry_chord.get())
@@ -218,25 +225,25 @@ class MidiPlayerApp(tk.Tk):
         self.after(0, self.on_parse_done)
 
     def on_parse_done(self):
-        self.label_status.config(
-            text=decode("5q+P5Lu75pyJ5o+Q5L6b5piv5rya6L+Z6ZOB5q2lTUlEST8=") + f"{len(self.events)}")
+        self.label_status.config(text=decode("6Kej5p6Q5a6M5oiQ77yM5YWx") + f"{len(self.events)}")
 
     def start_play(self):
         if not self.events:
-            self.label_status.config(text=decode("5q+P5Lu75pyJ5o+Q5L6b5piv5rya6L+Z6ZOB5q2lTUlEST8="))
+            self.label_status.config(
+                text=decode("5rKh5pyJ5Y+v5pKt5pS+55qE5LqL5Lu277yM6K+35YWI5Yqg6L295bm26Kej5p6QTUlESQ=="))
             return
         self.stop_play()
         self.stop_flag = False
         self.play_thread = threading.Thread(target=self.play_midi_events, daemon=True)
         self.play_thread.start()
-        self.label_status.config(text=decode("5q2j6Z2i5Lu277yB"))
+        self.label_status.config(text=decode("5q2j5Zyo5pKt5pS+Li4u"))
 
     def stop_play(self):
         self.stop_flag = True
         if self.play_thread and self.play_thread.is_alive():
             self.play_thread.join()
         self.play_thread = None
-        self.label_status.config(text=decode("5Lu75pyJ5oiR5piv5Z2i5Lu2"))
+        self.label_status.config(text=decode("5pKt5pS+5bey5YGc5q2i"))
 
     def play_midi_events(self):
         start_time = time.time()
@@ -260,7 +267,7 @@ class MidiPlayerApp(tk.Tk):
             k = get_key_for_pitch(p)
             if k is not None:
                 pydirectinput.keyUp(k)
-        self.after(0, lambda: self.label_status.config(text=decode("5Lu75pyJ5oSP6Z2i")))
+        self.after(0, lambda: self.label_status.config(text=decode("5pKt5pS+57uT5p2f")))
 
     def start_global_hotkeys(self):
         def on_activate_start():
@@ -271,8 +278,8 @@ class MidiPlayerApp(tk.Tk):
 
         def run_hotkeys():
             with GlobalHotKeys({
-                '<ctrl>+<f10>': on_activate_start,
-                '<ctrl>+<f11>': on_activate_stop
+                decode("PGN0cmw+K2YxMA=="): on_activate_start,
+                decode("PGN0cmw+K2YxMTE="): on_activate_stop
             }) as h:
                 h.join()
 
