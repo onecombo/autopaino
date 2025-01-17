@@ -3,15 +3,15 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'       # 当推送以 'v' 开头的标签时触发
-  workflow_dispatch:    # 允许手动触发工作流
+      - 'v*'
+  workflow_dispatch:
 
 permissions:
-  contents: write       # 允许工作流写入仓库内容，如创建 Release
+  contents: write
 
 jobs:
   build-and-release:
-    runs-on: windows-latest    # 使用 Windows 环境以生成 .exe 文件
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -20,8 +20,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'   # 根据项目需求选择 Python 版本
-
+          python-version: '3.12'
+          
       - name: Install dependencies
         shell: pwsh
         run: |
