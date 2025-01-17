@@ -48,3 +48,9 @@ jobs:
           draft: false
           prerelease: false
           files: dist/autopaino.exe
+
+      - name: Clean build directories
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force build, dist, auto.spec -ErrorAction SilentlyContinue
+
