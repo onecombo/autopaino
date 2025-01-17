@@ -32,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: my-executable
-        path: dist/main.exe
+        path: dist/autopaino.exe
 
     - name: Create Release
       uses: ncipollo/release-action@v1
