@@ -38,14 +38,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/autopaino.exe
-          asset_name: autopaino.exe
+          asset_path: ./dist/auto.exe
+          asset_name: auto.exe
           asset_content_type: application/octet-stream
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: dist/autopaino.exe
+          files: dist/auto.exe
 
       - name: Clean build directories
         shell: pwsh
