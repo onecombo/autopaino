@@ -41,12 +41,8 @@ jobs:
           path: dist/auto.exe
 
       - name: Create GitHub Release
-        uses: ncipollo/release-action@v1.15.0
+        uses: softprops/action-gh-release@v1
         with:
-          tag: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
           files: dist/autopaino.exe
 
       - name: Clean build directories
