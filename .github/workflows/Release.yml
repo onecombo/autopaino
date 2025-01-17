@@ -8,10 +8,10 @@ on:
 
 jobs:
   build-and-release:
-    runs-on: windows-latest 
+    runs-on: windows-latest
 
     steps:
-    - name: Check out code
+      - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -22,24 +22,31 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
+        pip install pyinstaller
         pip install -r requirements.txt
 
-    - name: Build exe with PyInstaller
+      - name: Build executable with PyInstaller
       run: |
-        pyinstaller --onefile auto.py
+        pyinstaller --onefile --windowed auto.py
 
-    - name: Archive build artifact
+      - name: Upload executable as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: my-executable
-        path: dist/main.exe
+        name: auto-executable
+        path: dist/auto.exe
 
-    - name: Create Release
+      - name: Create GitHub Release
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ github.ref_name }}
-        name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
-        artifacts: "my-executable"
-        token: ${{ secrets.GITHUB_TOKEN }}
+        files: dist/autopaino.exe
+
+      - name: Clean build directories
+        run: |
+          rmdir /S /Q build
+          rmdir /S /Q dist
+          del auto.spec
+
