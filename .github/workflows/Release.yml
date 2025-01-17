@@ -35,13 +35,13 @@ jobs:
           python -m PyInstaller --onefile --windowed auto.py
 
       - name: Upload executable as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: auto-executable
           path: dist/auto.exe
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.2.1
         with:
           files: dist/autopaino.exe
 
