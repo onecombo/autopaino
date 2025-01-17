@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -34,13 +34,10 @@ jobs:
         run: |
           python -m PyInstaller --onefile --windowed auto.py
 
-      - name: Upload executable as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/auto.exe
-          asset_name: auto.exe
-          asset_content_type: application/octet-stream
+      - name: List dist directory
+        run: |
+          echo "Listing contents of dist/ directory:"
+          dir dist
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.2.1
