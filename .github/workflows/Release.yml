@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'   # 根据项目需求选择 Python 版本
+          python-version: '3.12'   # 根据项目需求选择 Python 版本
 
       - name: Install dependencies
         shell: pwsh
@@ -32,23 +32,19 @@ jobs:
       - name: Build executable with PyInstaller
         shell: pwsh
         run: |
-          python -m PyInstaller --onefile --noconsole auto.py
-          # 或者使用 --windowed
-          # python -m PyInstaller --onefile --windowed auto.py
+          python -m PyInstaller --onefile --windowed auto.py
 
       - name: Upload executable as artifact
         uses: actions/upload-artifact@v3
         with:
           name: auto-executable
-          path: dist/auto.exe                # 默认输出路径，根据需要调整
+          path: dist/auto.exe
 
       - name: Create GitHub Release
-        uses: ncipollo/release-action@v1.15.0   # 使用支持 'files' 输入的最新版本
+        uses: ncipollo/release-action@v1.15.0
         with:
-          tag: ${{ github.ref_name }}         # 使用推送的标签作为 Release 标签
+          tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: dist/auto.exe                 # 上传可执行文件到 Release
-          # 如果需要使用 PAT，取消注释以下行并确保已添加 `PERSONAL_ACCESS_TOKEN` 到 Secrets
-          # token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          files: dist/auto.exe
