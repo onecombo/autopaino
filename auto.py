@@ -1,3 +1,4 @@
+import base64
 import os
 import sys
 import ctypes
@@ -9,15 +10,21 @@ import pydirectinput
 from mido import MidiFile
 from pynput.keyboard import GlobalHotKeys
 
+
+def decode(b64: str) -> str:
+    return base64.b64decode(b64).decode('utf-8')
+
+
 def check_admin():
     try:
         is_admin = (os.getuid() == 0)
     except AttributeError:
         is_admin = (ctypes.windll.shell32.IsUserAnAdmin() != 0)
     if not is_admin:
-        print("当前非管理员权限，尝试提权...")
+        print(decode("5piv5ZCI5p2D5paw5Yqf5pu+5Yiw6ZOB5q2lLi4u"))
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
         sys.exit(0)
+
 
 KEY_MAP = {
     72: '1',
@@ -44,6 +51,7 @@ KEY_MAP = {
 }
 WHITE_KEYS = sorted(KEY_MAP.keys())
 
+
 def get_closest_white_key(pitch: int) -> int:
     if not WHITE_KEYS:
         return None
@@ -64,6 +72,7 @@ def get_closest_white_key(pitch: int) -> int:
                 min_diff = diff
     return closest
 
+
 def get_key_for_pitch(pitch: int) -> str:
     if pitch in KEY_MAP:
         return KEY_MAP[pitch]
@@ -71,6 +80,7 @@ def get_key_for_pitch(pitch: int) -> str:
     if cwk is not None:
         return KEY_MAP.get(cwk, None)
     return None
+
 
 def parse_midi_all_tempo(midi_path: str):
     mid = MidiFile(midi_path)
@@ -106,6 +116,7 @@ def parse_midi_all_tempo(midi_path: str):
     results.sort(key=lambda e: e[0])
     return results
 
+
 def post_process_events(events, chord_min_interval=0.01, note_min_interval=0.03):
     if not events:
         return []
@@ -135,39 +146,42 @@ def post_process_events(events, chord_min_interval=0.01, note_min_interval=0.03)
     adjusted.sort(key=lambda x: x[0])
     return adjusted
 
+
 class MidiPlayerApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MIDI Player (多轨Tempo + 后台解析) from:瑶光沁雪-泪冠哀歌，本程序免费发布，如有倒卖请及时退款。")
+        self.title(decode(
+            "TUlESSBQbGF5ZXIgKOaYrumTtuWPkeW6l1RlbXBvICsg5pyJ5qCh6KeG5pyqKSBmcm9tOuafruWJjeadgOanAy3our/np5HlrZDnmITlnKjnpLrnoh46L657omZTmiYvmmK/nnb7vvIA="))
         self.events = []
         self.play_thread = None
         self.stop_flag = False
         self.parse_thread = None
         frame_top = tk.Frame(self)
         frame_top.pack(pady=5)
-        self.btn_select = tk.Button(frame_top, text="选择 MIDI 文件", command=self.on_select_file)
+        self.btn_select = tk.Button(frame_top, text=decode("6K6h5pyJIE1JREkg5paw5a2Q"), command=self.on_select_file)
         self.btn_select.pack(side=tk.LEFT, padx=5)
-        self.label_file = tk.Label(frame_top, text="未选择文件", width=35, anchor='w')
+        self.label_file = tk.Label(frame_top, text=decode("5piv6K6h5pyJ5paw5a2Q"), width=35, anchor='w')
         self.label_file.pack(side=tk.LEFT, padx=5)
         frame_intervals = tk.Frame(self)
         frame_intervals.pack(pady=5)
-        tk.Label(frame_intervals, text="和弦最小间隔 (秒):").pack(side=tk.LEFT, padx=2)
+        tk.Label(frame_intervals, text=decode("6Kqk6YGN5p2l5bi45pu45bqPICjlj4LnrYkn")).pack(side=tk.LEFT, padx=2)
         self.entry_chord = tk.Entry(frame_intervals, width=5)
         self.entry_chord.pack(side=tk.LEFT, padx=2)
         self.entry_chord.insert(0, "0")
-        tk.Label(frame_intervals, text="音符最小间隔 (秒)").pack(side=tk.LEFT, padx=2)
+        tk.Label(frame_intervals, text=decode("5pyq5LiX5p2l5bi45pu45bqPICjlj4LnrYkn")).pack(side=tk.LEFT, padx=2)
         self.entry_note = tk.Entry(frame_intervals, width=5)
         self.entry_note.pack(side=tk.LEFT, padx=2)
         self.entry_note.insert(0, "0")
-        self.label_status = tk.Label(self, text="准备就绪")
+        self.label_status = tk.Label(self, text=decode("5piv6K+36Ze0"))
         self.label_status.pack(pady=5)
         frame_play = tk.Frame(self)
         frame_play.pack(pady=5)
-        self.btn_start = tk.Button(frame_play, text="开始播放 (Ctrl+F10)", command=self.start_play)
+        self.btn_start = tk.Button(frame_play, text=decode("5oiR5piv5Z2i5Lu2KCBDdHJsK0YxMCk="), command=self.start_play)
         self.btn_start.pack(side=tk.LEFT, padx=10)
-        self.btn_stop = tk.Button(frame_play, text="停止播放 (Ctrl+F11)", command=self.stop_play)
+        self.btn_stop = tk.Button(frame_play, text=decode("5oiR5piv5Z2i5Lu2KCBDdHJsK0YxMTEp"), command=self.stop_play)
         self.btn_stop.pack(side=tk.LEFT, padx=10)
-        self.label_author = tk.Label(self, text="瑶光沁雪-泪冠哀歌，本程序免费发布，如遇倒卖请及时退款。")
+        self.label_author = tk.Label(self, text=decode(
+            "5p+u5YmN5p2A5qcDLei6v+enkeWtkOeahOWcqOekuueheOi+ueaJlOaJi+aYr+etvu+8gA=="))
         self.label_author.pack(side=tk.BOTTOM, pady=5)
         self.global_hotkey_listener = None
         self.start_global_hotkeys()
@@ -175,18 +189,19 @@ class MidiPlayerApp(tk.Tk):
     def on_select_file(self):
         self.stop_play()
         self.events = []
-        file_path = filedialog.askopenfilename(title="选择 MIDI 文件", filetypes=[("MIDI files", "*.mid *.midi"), ("All files", "*.*")])
+        file_path = filedialog.askopenfilename(title=decode("6K6h5pyJIE1JREkg5paw5a2Q"),
+                                               filetypes=[("MIDI files", "*.mid *.midi"), ("All files", "*.*")])
         if file_path:
             self.label_file.config(text=file_path)
-            self.label_status.config(text="后台解析中，请稍候...")
+            self.label_status.config(text=decode("5Yqg5pyJ5qCh6KeG5pyq5ZCN77yB"))
             if self.parse_thread and self.parse_thread.is_alive():
-                self.label_status.config(text="等待上一个解析完成...")
+                self.label_status.config(text=decode("5b+F5bel5L2c56K6656i5pyJ5qCh5rya6L+Z77yB"))
                 return
             self.parse_thread = threading.Thread(target=self.parse_midi_in_background, args=(file_path,), daemon=True)
             self.parse_thread.start()
         else:
-            self.label_file.config(text="未选择文件")
-            self.label_status.config(text="未选择文件")
+            self.label_file.config(text=decode("5piv6K6h5pyJ5paw5a2Q"))
+            self.label_status.config(text=decode("5piv6K6h5pyJ5paw5a2Q"))
 
     def parse_midi_in_background(self, file_path: str):
         raw_events = parse_midi_all_tempo(file_path)
@@ -203,24 +218,25 @@ class MidiPlayerApp(tk.Tk):
         self.after(0, self.on_parse_done)
 
     def on_parse_done(self):
-        self.label_status.config(text=f"解析完成，共 {len(self.events)} 个事件")
+        self.label_status.config(
+            text=decode("5q+P5Lu75pyJ5o+Q5L6b5piv5rya6L+Z6ZOB5q2lTUlEST8=") + f"{len(self.events)}")
 
     def start_play(self):
         if not self.events:
-            self.label_status.config(text="没有可播放的事件，请先加载并解析MIDI")
+            self.label_status.config(text=decode("5q+P5Lu75pyJ5o+Q5L6b5piv5rya6L+Z6ZOB5q2lTUlEST8="))
             return
         self.stop_play()
         self.stop_flag = False
         self.play_thread = threading.Thread(target=self.play_midi_events, daemon=True)
         self.play_thread.start()
-        self.label_status.config(text="正在播放...")
+        self.label_status.config(text=decode("5q2j6Z2i5Lu277yB"))
 
     def stop_play(self):
         self.stop_flag = True
         if self.play_thread and self.play_thread.is_alive():
             self.play_thread.join()
         self.play_thread = None
-        self.label_status.config(text="播放已停止")
+        self.label_status.config(text=decode("5Lu75pyJ5oiR5piv5Z2i5Lu2"))
 
     def play_midi_events(self):
         start_time = time.time()
@@ -244,26 +260,31 @@ class MidiPlayerApp(tk.Tk):
             k = get_key_for_pitch(p)
             if k is not None:
                 pydirectinput.keyUp(k)
-        self.after(0, lambda: self.label_status.config(text="播放结束"))
+        self.after(0, lambda: self.label_status.config(text=decode("5Lu75pyJ5oSP6Z2i")))
 
     def start_global_hotkeys(self):
         def on_activate_start():
             self.start_play()
+
         def on_activate_stop():
             self.stop_play()
+
         def run_hotkeys():
             with GlobalHotKeys({
                 '<ctrl>+<f10>': on_activate_start,
                 '<ctrl>+<f11>': on_activate_stop
             }) as h:
                 h.join()
+
         self.global_hotkey_listener = threading.Thread(target=run_hotkeys, daemon=True)
         self.global_hotkey_listener.start()
+
 
 def main():
     check_admin()
     app = MidiPlayerApp()
     app.mainloop()
+
 
 if __name__ == '__main__':
     main()
