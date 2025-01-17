@@ -37,8 +37,10 @@ jobs:
       - name: Upload executable as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: auto-executable
-          path: dist/auto.exe
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/autopaino.exe
+          asset_name: autopaino.exe
+          asset_content_type: application/octet-stream
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.2.1
