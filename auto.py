@@ -114,7 +114,7 @@ def parse_midi_all_tempo(midi_path):
             current_tempo = tempo_val
         else:
             results.append((current_time, etype, note, velocity))
-    results.sort(key=lambda e: e[0])
+    results.sort(key=lambda x: x[0])
     return results
 
 
@@ -164,15 +164,11 @@ class MidiPlayerApp(tk.Tk):
         self.label_file.pack(side=tk.LEFT, padx=5)
         frame_intervals = tk.Frame(self)
         frame_intervals.pack(pady=5)
-        tk.Label(frame_intervals,
-                 text=decode("5ZKM5bym5pyA5bCP6Ze06ZqUIA==")).pack(
-            side=tk.LEFT, padx=2)
+        tk.Label(frame_intervals, text=decode("5ZKM5bym5pyA5bCP6Ze06ZqUIA==")).pack(side=tk.LEFT, padx=2)
         self.entry_chord = tk.Entry(frame_intervals, width=5)
         self.entry_chord.pack(side=tk.LEFT, padx=2)
         self.entry_chord.insert(0, "0")
-        tk.Label(frame_intervals,
-                 text=decode("6Z+z56ym5pyA5bCP6Ze06ZqU")).pack(
-            side=tk.LEFT, padx=2)
+        tk.Label(frame_intervals, text=decode("6Z+z56ym5pyA5bCP6Ze06ZqU")).pack(side=tk.LEFT, padx=2)
         self.entry_note = tk.Entry(frame_intervals, width=5)
         self.entry_note.pack(side=tk.LEFT, padx=2)
         self.entry_note.insert(0, "0")
@@ -184,9 +180,8 @@ class MidiPlayerApp(tk.Tk):
         self.btn_start.pack(side=tk.LEFT, padx=10)
         self.btn_stop = tk.Button(frame_play, text=decode("5YGc5q2i5pKt5pS+IChDdHJsK0YxMSk="), command=self.stop_play)
         self.btn_stop.pack(side=tk.LEFT, padx=10)
-        self.label_author = tk.Label(self,
-                                     text=decode("55G25YWJ5rKB6ZuqLeazquWGoOWTgOatjO+8jOacrOeoi+W6j+WFjei0ueWPkeW4g"
-                                                 "++8jOWmgumBh+WAkuWNluivt+WPiuaXtumAgOasvuOAgg=="))
+        self.label_author = tk.Label(self, text=decode(
+            "55G25YWJ5rKB6ZuqLeazquWGoOWTgOatjO+8jOacrOeoi+W6j+WFjei0ueWPkeW4g++8jOWmgumBh+WAkuWNluivt+WPiuaXtumAgOasvuOAgg=="))
         self.label_author.pack(side=tk.BOTTOM, pady=5)
         self.global_hotkey_listener = None
         self.start_global_hotkeys()
@@ -211,7 +206,11 @@ class MidiPlayerApp(tk.Tk):
             self.label_status.config(text=decode("5pyq6YCJ5oup5paH5Lu2"))
 
     def parse_midi_in_background(self, file_path):
-        raw_events = parse_midi_all_tempo(file_path)
+        try:
+            raw_events = parse_midi_all_tempo(file_path)
+        except OSError:
+            self.after(0, lambda: self.label_status.config(text="该 MIDI 文件不支持"))
+            return
         try:
             chord_val = float(self.entry_chord.get())
         except ValueError:
@@ -236,14 +235,14 @@ class MidiPlayerApp(tk.Tk):
         self.stop_flag = False
         self.play_thread = threading.Thread(target=self.play_midi_events, daemon=True)
         self.play_thread.start()
-        self.label_status.config(text=decode("5q2j5Zyo5pKt5pS+Li4u"))
+        self.label_status.config(text=decode("6IGv5Zyo5pKt5pS+Li4u"))
 
     def stop_play(self):
         self.stop_flag = True
         if self.play_thread and self.play_thread.is_alive():
             self.play_thread.join()
         self.play_thread = None
-        self.label_status.config(text=decode("5pKt5pS+5bey5YGc5q2i"))
+        self.label_status.config(text=decode("6IGv5Zyo5pKt5pS+5bey5YGc5q2i"))
 
     def play_midi_events(self):
         start_time = time.time()
@@ -255,7 +254,7 @@ class MidiPlayerApp(tk.Tk):
             if elapsed >= event_time:
                 key_to_press = get_key_for_pitch(pitch)
                 if key_to_press is not None:
-                    if event_type == 'note_on' and velocity > 0:
+                    if event_type == decode("bm90ZV9vbg==") and velocity > 0:
                         pydirectinput.keyDown(key_to_press)
                     else:
                         pydirectinput.keyUp(key_to_press)
@@ -278,8 +277,8 @@ class MidiPlayerApp(tk.Tk):
 
         def run_hotkeys():
             with GlobalHotKeys({
-                decode("PGN0cmw+K2YxMA=="): on_activate_start,
-                decode("PGN0cmw+K2YxMTE="): on_activate_stop
+                '<ctrl>+<f10>': on_activate_start,
+                '<ctrl>+<f11>': on_activate_stop
             }) as h:
                 h.join()
 
