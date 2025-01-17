@@ -41,7 +41,7 @@ jobs:
           path: dist/auto.exe                # 默认输出路径，根据需要调整
 
       - name: Create GitHub Release
-        uses: ncipollo/release-action@v1.17.0   # 使用支持 'files' 输入的版本
+        uses: ncipollo/release-action@v1.15.0   # 使用支持 'files' 输入的版本
         with:
           tag: ${{ github.ref_name }}         # 使用推送的标签作为 Release 标签
           name: Release ${{ github.ref_name }}
